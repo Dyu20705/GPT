@@ -1,6 +1,7 @@
 using Printf
 using SHA
 using Unicode
+import MiniGPT
 
 const CORPUS_RELATIVE_PATH = joinpath("data", "raw", "tiny_corpus.txt")
 const EXPECTED_TOKENS = 1677
@@ -60,62 +61,6 @@ end
 
 function char_tokens(text)
     return collect(text)
-end
-
-function deterministic_vocabulary(tokens)
-    return sort!(collect(Set(tokens)))
-end
-
-function split_tokens(tokens)
-    total = length(tokens)
-    train_end = floor(Int, TRAIN_RATIO * total)
-    validation_count = floor(Int, VALIDATION_RATIO * total)
-    validation_end = train_end + validation_count
-
-    train = tokens[1:train_end]
-    validation = tokens[(train_end + 1):validation_end]
-    test = tokens[(validation_end + 1):end]
-
-    length(train) + length(validation) + length(test) == total ||
-        fail("Split sizes do not add up to total token count.")
-
-    return train, validation, test
-end
-
-function build_tokenizer(vocabulary)
-    stoi = Dict(ch => id for (id, ch) in enumerate(vocabulary))
-    itos = Dict(id => ch for (id, ch) in enumerate(vocabulary))
-
-    length(stoi) == length(vocabulary) ||
-        fail("Vocabulary is not injective: at least two characters share a token id.")
-    length(itos) == length(vocabulary) ||
-        fail("ID map is not injective: at least two token ids share a character.")
-
-    return stoi, itos
-end
-
-function encode(tokens, stoi)
-    ids = Vector{Int}(undef, length(tokens))
-
-    for (i, ch) in enumerate(tokens)
-        id = get(stoi, ch, nothing)
-        id === nothing && fail("Encode failed: character $(describe_char(ch)) is not in vocabulary.")
-        ids[i] = id
-    end
-
-    return ids
-end
-
-function decode(ids, itos)
-    chars = Vector{Char}(undef, length(ids))
-
-    for (i, id) in enumerate(ids)
-        ch = get(itos, id, nothing)
-        ch === nothing && fail("Decode failed: token id $id is outside the vocabulary.")
-        chars[i] = ch
-    end
-
-    return String(chars)
 end
 
 function describe_char(ch)
@@ -337,10 +282,17 @@ function main()
     validate_file(path)
     bytes, text = read_utf8(path)
     tokens = char_tokens(text)
-    vocabulary = deterministic_vocabulary(tokens)
-    train, validation, test = split_tokens(tokens)
-    stoi, itos = build_tokenizer(vocabulary)
-    encoded = encode(tokens, stoi)
+    tokenizer = MiniGPT.CharacterTokenizer(text)
+    vocabulary = MiniGPT.vocabulary(tokenizer)
+    encoded = MiniGPT.encode(tokenizer, text)
+    splits = MiniGPT.split_token_ids(
+        encoded;
+        train_ratio = TRAIN_RATIO,
+        validation_ratio = VALIDATION_RATIO,
+    )
+    train = splits.train
+    validation = splits.validation
+    test = splits.test
 
     length(encoded) == length(tokens) ||
         fail("Encoded token count does not match character token count.")
@@ -349,7 +301,7 @@ function main()
     length(Set(encoded)) == length(vocabulary) ||
         fail("Encoded ids do not cover the full vocabulary.")
 
-    decoded_text = decode(encoded, itos)
+    decoded_text = MiniGPT.decode(tokenizer, encoded)
     decoded_tokens = char_tokens(decoded_text)
 
     length(decoded_tokens) == length(tokens) ||
@@ -368,8 +320,11 @@ function main()
     crlf_count = count_crlf(tokens)
     standalone_cr_count = cr_count - crlf_count
     space_count = count(==(' '), tokens)
+    train_tokens = char_tokens(MiniGPT.decode(tokenizer, train))
+    validation_tokens = char_tokens(MiniGPT.decode(tokenizer, validation))
+    test_tokens = char_tokens(MiniGPT.decode(tokenizer, test))
     train_vocab, validation_only, test_only, missing_from_train =
-        inspect_splits(train, validation, test, vocabulary)
+        inspect_splits(train_tokens, validation_tokens, test_tokens, vocabulary)
 
     check_distribution(
         vocabulary,

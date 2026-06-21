@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "8f3c973732c0081c8aab46c06c22eadb2a8cce9e"
+project_hash = "c8dfc1c83923c1d9320a9bef559bd64ec1163713"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "bbc22a9a08a0ef6460041086d8a7b27940ed4ffd"
@@ -983,6 +983,12 @@ version = "2.28.1010+0"
 git-tree-sha1 = "b513cedd20d9c914783d8ad83d08120702bf2c77"
 uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.3"
+
+[[deps.MiniGPT]]
+deps = ["BenchmarkTools", "Cascadia", "DataFrames", "Flux", "Gumbo", "HTTP", "JLD2", "JSON3", "NNlib", "Optimisers", "Plots", "Pluto", "ProgressMeter", "Revise", "Zygote"]
+path = "."
+uuid = "a6b85e13-2b2f-49e9-951a-93e578a29ab0"
+version = "0.1.0"
 
 [[deps.Missings]]
 deps = ["DataAPI"]

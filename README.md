@@ -1,3 +1,3 @@
 # MiniGPT
 
-> Tự học LLMS từ đầu
+> Tự học Bigram + NLP từ đầu
