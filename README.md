@@ -1,3 +1,3 @@
 # MiniGPT
 
-> Tự học Bigram + NLP từ đầu
+> Tự học DL + NLP từ đầu
