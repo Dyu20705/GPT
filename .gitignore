@@ -1,7 +1,7 @@
 # Generated data
 data/raw/*
+!data/raw/tiny_corpus.txt
 data/processed/*
-!data/raw/.gitkeep
 !data/processed/.gitkeep
 
 # Model checkpoints
