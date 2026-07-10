@@ -13,7 +13,8 @@ on:
         - reopened
         - ready_for_review
 
-    workflow_dispatch:
+  workflow_dispatch:
+      
 
 permissions:
   contents: read
@@ -33,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
-    default:
+    defaults:
       run:
         shell: bash
 
@@ -74,15 +75,15 @@ jobs:
         printf '%s\n' "$attributes"
 
         grep -Fq "$CORPUS_PATH: text: set" <<< "$attributes" || (echo "Fixture file does not have 'text' attribute set" && exit 1)
-        grep -Fq "$CORPUS_PATH: eol: set" <<< "$attributes" || (echo "Fixture file does not have 'eol' attribute set" && exit 1)
-        grep -Fq "$CORPUS_PATH: working-tree-encoding: set" <<< "$attributes" || (echo "Fixture file does not have 'working-tree-encoding' attribute set" && exit 1)
+        grep -Fq "$CORPUS_PATH: eol: lf" <<< "$attributes" || (echo "Fixture file does not have 'eol' attribute set" && exit 1)
+        grep -Fq "$CORPUS_PATH: working-tree-encoding: UTF-8" <<< "$attributes" || (echo "Fixture file does not have 'working-tree-encoding' attribute set" && exit 1)
 
     - name: Verify corpus checksum
       run: |
         set -euo pipefail
 
           printf '%s  %s\n' \
-            "$EXPECTED_CORPUS_SHA256" \
+            "$EXPECTED_CORPUS_HASH" \
             "$CORPUS_PATH" \
             | sha256sum --check --strict
 
