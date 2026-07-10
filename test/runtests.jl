@@ -1,7 +1,9 @@
 using Test
 using MiniGPT
+using SHA
 using Unicode
 
+const EXPECTED_CORPUS_SHA256 = "11c4625ab69b40e072e5a0b5a26084f52dc410821b4cdb58be326b376502f9b4"
 const EXPECTED_TOKENS = 1677
 const EXPECTED_VOCAB_SIZE = 47
 const EXPECTED_TRAIN_TOKENS = 1341
@@ -42,9 +44,11 @@ end
 end
 
 @testset "tiny character corpus fixture" begin
-    text = read(corpus_path(), String)
+    bytes = read(corpus_path())
+    text = String(copy(bytes))
     tokens = collect(text)
 
+    @test bytes2hex(sha256(bytes)) == EXPECTED_CORPUS_SHA256
     @test length(text) == EXPECTED_TOKENS
     @test length(Set(text)) == EXPECTED_VOCAB_SIZE
     @test Unicode.normalize(text, :NFC) == text
