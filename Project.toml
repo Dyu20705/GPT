@@ -27,8 +27,9 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 julia = "1.12"
 
 [extras]
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [targets]
-test = ["Test", "Unicode"]
+test = ["SHA", "Test", "Unicode"]
