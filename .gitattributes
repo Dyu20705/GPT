@@ -1,0 +1,9 @@
+* text=auto
+
+*.jl text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+data/raw/tiny_corpus.txt text eol=lf working-tree-encoding=UTF-8
