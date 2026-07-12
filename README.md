@@ -277,9 +277,9 @@ Mỗi phần tử trong `y` là token xuất hiện ngay sau phần tử tương
 
 Unigram model bỏ qua context và chỉ học xác suất xuất hiện tổng thể của từng token:
 
-\[
+$$
 P(x_t)
-\]
+$$
 
 Unigram trả lời câu hỏi:
 
@@ -296,9 +296,9 @@ Unigram trả lời câu hỏi:
 
 Bigram sử dụng token ngay trước đó để dự đoán token tiếp theo:
 
-\[
+$$
 P(x_t \mid x_{t-1})
-\]
+$$
 
 Count bigram học trực tiếp từ số lần các cặp token xuất hiện trong tập train.
 
@@ -318,9 +318,9 @@ Count bigram là baseline quan trọng vì nó đơn giản, dễ kiểm tra và
 
 Neural bigram vẫn giải quyết bài toán:
 
-\[
+$$
 P(x_t \mid x_{t-1})
-\]
+$$
 
 Điểm khác biệt là distribution không còn được tạo trực tiếp từ bảng đếm. Thay vào đó, mô hình học một bảng logits bằng gradient descent.
 
@@ -345,9 +345,9 @@ Bigram chỉ nhìn một token trước đó.
 
 Một mô hình context dài hơn sẽ học:
 
-\[
+$$
 P(x_t \mid x_{t-k},\ldots,x_{t-1})
-\]
+$$
 
 Giai đoạn này dự kiến giới thiệu:
 
